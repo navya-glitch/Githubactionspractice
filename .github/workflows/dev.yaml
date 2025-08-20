@@ -34,7 +34,7 @@ jobs:
       runId: ${{ steps.prepare.outputs.runId }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        # uses: actions/checkout@v4
 
       - name: Preparation
         id: prepare
@@ -87,3 +87,4 @@ jobs:
         run: |
           echo "Deploying..."
           # replace with pipelineUtils.deploy()
+
