@@ -1,20 +1,89 @@
-name: First Workflow
+# name: First Workflow
+
+# on:
+#   push:
+
+
+# jobs:
+#   firstjob:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     - name: Install dependencies
+#       run: npm install
+#       working-directory: ./nodejs-shopping
+
+#     - name: Run app or tests
+#       run: npm start
+#       working-directory: ./nodejs-shopping
+
+name: CI Pipeline
 
 on:
+  workflow_dispatch:
   push:
-
+    branches:
+      - main
 
 jobs:
-  firstjob:
+  preparation:
     runs-on: ubuntu-latest
+    outputs:
+      runId: ${{ steps.prepare.outputs.runId }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./nodejs-shopping
+      - name: Preparation
+        id: prepare
+        run: |
+          # Simulating pipelineUtils.prepareRun()
+          runId=$(date +%s)  
+          echo "runId=$runId" >> $GITHUB_OUTPUT
 
-    - name: Run app or tests
-      run: npm start
-      working-directory: ./nodejs-shopping
+  jobA:
+    runs-on: ubuntu-latest
+    needs: preparation
+    steps:
+      - name: Run JobA
+        run: |
+          echo "Running JobA with runId=${{ needs.preparation.outputs.runId }}"
+          # replace with pipelineUtils.runJob('JobA')
+
+  jobB:
+    runs-on: ubuntu-latest
+    needs: preparation
+    steps:
+      - name: Run JobB
+        run: |
+          echo "Running JobB with runId=${{ needs.preparation.outputs.runId }}"
+          # replace with pipelineUtils.runJob('JobB')
+
+  jobC:
+    runs-on: ubuntu-latest
+    needs: preparation
+    steps:
+      - name: Run JobC
+        run: |
+          echo "Running JobC with runId=${{ needs.preparation.outputs.runId }}"
+          # replace with pipelineUtils.runJob('JobC')
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: [jobA, jobB, jobC]
+    steps:
+      - name: Integration
+        run: |
+          echo "Integrating results from JobA, JobB, JobC"
+          # replace with pipelineUtils.integrateJobs(['JobA', 'JobB', 'JobC'])
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: integration
+    steps:
+      - name: Deploy
+        run: |
+          echo "Deploying..."
+          # replace with pipelineUtils.deploy()
